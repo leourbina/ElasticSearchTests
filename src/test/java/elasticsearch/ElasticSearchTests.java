@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.WriteConsistencyLevel;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.percolate.PercolateResponse;
+import org.elasticsearch.action.percolate.PercolateSourceBuilder.DocBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
@@ -146,17 +147,12 @@ public class ElasticSearchTests extends ElasticsearchIntegrationTest {
             .endObject())
         .setConsistencyLevel(WriteConsistencyLevel.ONE)
         .execute().actionGet();
-
-
-    XContentBuilder doc = XContentFactory.jsonBuilder()
-        .startObject()
-        .rawField("doc", tweet.getContentBuilder().bytes())
-        .endObject();
+    refresh();
 
     PercolateResponse result = client.preparePercolate()
         .setIndices(INDEX)
         .setDocumentType(tweet.getType())
-        .setSource(doc)
+        .setPercolateDoc(new DocBuilder().setDoc(tweet.getContentBuilder().bytes()))
         .execute().actionGet();
 
     Assertions.assertThat(result.getCount()).isEqualTo(2);
@@ -164,7 +160,7 @@ public class ElasticSearchTests extends ElasticsearchIntegrationTest {
     PercolateResponse filteredResult1 = client.preparePercolate()
         .setIndices(INDEX)
         .setDocumentType(tweet.getType())
-        .setSource(doc)
+        .setPercolateDoc(new DocBuilder().setDoc(tweet.getContentBuilder()))
         .setPercolateFilter(FilterBuilders.termFilter("userId", 1))
         .execute().actionGet();
 
@@ -174,7 +170,7 @@ public class ElasticSearchTests extends ElasticsearchIntegrationTest {
     PercolateResponse filteredResult2 = client.preparePercolate()
         .setIndices(INDEX)
         .setDocumentType(tweet.getType())
-        .setSource(doc)
+        .setPercolateDoc(new DocBuilder().setDoc(tweet.getContentBuilder()))
         .setPercolateFilter(FilterBuilders.termFilter("userId", 2))
         .execute().actionGet();
 
