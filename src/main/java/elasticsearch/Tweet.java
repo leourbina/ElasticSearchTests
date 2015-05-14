@@ -1,4 +1,4 @@
-package elasticsearch.updates;
+package elasticsearch;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;

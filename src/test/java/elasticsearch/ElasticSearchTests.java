@@ -1,4 +1,4 @@
-package elasticsearch.updates;
+package elasticsearch;
 
 import com.carrotsearch.randomizedtesting.RandomizedRunner;
 import com.google.common.base.Charsets;
@@ -28,7 +28,7 @@ import java.util.List;
 
 @RunWith(RandomizedRunner.class)
 @ClusterScope(scope = Scope.TEST, numDataNodes = 1)
-public class TestUpdates extends ElasticsearchIntegrationTest {
+public class ElasticSearchTests extends ElasticsearchIntegrationTest {
   private static final String INDEX = "twitter-1";
   private static final String INDEX_MAPPING = "twitter_mapping.json";
   private static final String PERCOLATOR_TYPE = ".percolator";
